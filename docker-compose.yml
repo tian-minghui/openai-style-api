@@ -1,0 +1,7 @@
+version: "1"
+services:
+  openai-key:
+    build: .
+    command: python open-api.py
+    ports:
+      - "8090:8090"

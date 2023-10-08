@@ -1,0 +1,32 @@
+{
+    "f2b7295fc440db7f": {
+        "type": "azure",
+        "api_base": "https://xxxx.openai.azure.com/",
+        "deployment_id": "gpt-35-turbo",
+        "api_version": "2023-05-15",
+        "api_key": "xxxxxxxxxx",
+        "temperature": 0.8
+    },
+    "GxqT3BlbkFJj": {
+        "type": "openai",
+        "api_base": "https://api.openai.com/v1/",
+        "api_key": "xxxxxxxxxx",
+        "model": "gpt-3.5-turbo"
+    },
+    "sb-ede1529390cc": {
+        "type": "proxy",
+        "api_base": "https://api.openai-sb.com/v1/",
+        "api_key": "xxxxxxxxxx",
+        "model": "gpt-3.5-turbo"
+    },
+    "c115c8f5082": {
+        "type": "claude-web",
+        "cookie": "xxxxxxxxxx",
+        "proxies": {
+            "https": "http://localhost:7890"
+        },
+        "conversation_id": "xxxxxxx",  
+        "prompt": "The information in [] is the context of the conversation. Please ignore the JSON format of the context during the conversation and answer the user's latest conversation: {newMessage} \n {history}",
+        "single_conversation": true
+    }
+}
