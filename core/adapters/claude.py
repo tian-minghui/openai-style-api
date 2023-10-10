@@ -4,7 +4,7 @@ import requests
 from core.adapters.base import ModelAdapter
 from core.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
-from core.util import num_tokens_from_string
+from core.utils.util import num_tokens_from_string
 import time
 
 # 默认的model映射，不过request中的model参数会被config覆盖

@@ -14,6 +14,7 @@ Shield the differences between different large model APIs and use large models i
   - [x] azure open ai
   - [x] claude-api 【api application is on the waiting list, not tested yet】
   - [x] claude-web (encapsulate web functions into openai api)
+  - [x] 智谱ai
 - Support stream mode calling
 - Support third-party proxy services for open ai, such as openai-sb
 
@@ -22,8 +23,7 @@ Shield the differences between different large model APIs and use large models i
 - [ ] Configuration update interface
 - [ ] Support more large models
   - [ ] bingchat
-  - [ ] 智谱ai
-  - [ ] google palm2
+  - [x] 智谱ai
   - [ ] 百度文心一言
   - [ ] 讯飞星火
   - [ ] ...
@@ -82,3 +82,45 @@ Shield the differences between different large model APIs and use large models i
 
 [ChatGPT Next Web](https://github.com/Yidadaa/ChatGPT-Next-Web)
 ![Alt text](image.png)
+
+
+## config example
+    {
+        "f2b7295fc440db7f": {
+            "type": "azure",
+            "api_base": "https://xxxx.openai.azure.com/",
+            "deployment_id": "gpt-35-turbo",
+            "api_version": "2023-05-15",
+            "api_key": "xxxxxxxxxx",
+            "temperature": 0.8
+        },
+        "GxqT3BlbkFJj": {
+            "type": "openai",
+            "api_base": "https://api.openai.com/v1/",
+            "api_key": "xxxxxxxxxx",
+            "model": "gpt-3.5-turbo"
+        },
+        "sb-ede1529390cc": {
+            "type": "proxy",  // 代理类型
+            "api_base": "https://api.openai-sb.com/v1/",
+            "api_key": "xxxxxxxxxx",
+            "model": "gpt-3.5-turbo"
+        },
+        "c115c8f5082": {
+            "type": "claude-web",  
+            "cookie": "xxxxxxxxxx",  // claude web cookie
+            "proxies": {  // 代理，解决一些国家和地区不可用
+                "https": "http://localhost:7890"
+            },
+            "conversation_id": "xxxxxxx",    // 会话id，可选
+            "prompt": "The information in [] is the context of the conversation. Please ignore the JSON format of the context during the conversation and answer the user's latest conversation: {newMessage} \n {history}",  // prompt 通过此prompt把请求多个message转化成一次请求
+            "single_conversation": true  // 单会话模式，每次访问都适用一个会话
+        },
+        "7c7aa4a3549f5": {
+          "type": "zhipu-api",
+          "api_key":"xxxxxxx",
+          "model":"chatglm_lite",
+          "temperature":0.8
+        }
+    }
+    

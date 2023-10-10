@@ -2,7 +2,7 @@ from typing import Iterator
 from core.adapters.base import ModelAdapter
 from core.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
-from core.util import num_tokens_from_string
+from core.utils.util import num_tokens_from_string
 from core.clients.claude_web_client import ClaudeWebClient
 import time
 

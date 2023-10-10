@@ -7,6 +7,7 @@ from core.adapters.base import ModelAdapter
 from core.adapters.claude import ClaudeModel
 from core.adapters.claude_web import ClaudeWebModel
 from core.adapters.proxy import ProxyAdapter
+from core.adapters.zhipu_api import ZhiPuApiModel
 
 key2Config = {}
 
@@ -61,6 +62,10 @@ def getModel(config: ModelConfig) -> ModelAdapter:
         return model
     if config.type == "claude-web":
         model = ClaudeWebModel(**config.kwargs)
+        model_instance_dict[config.key] = model
+        return model
+    if config.type == "zhipu-api":
+        model = ZhiPuApiModel(**config.kwargs)
         model_instance_dict[config.key] = model
         return model
     raise ValueError(f"unknown model type: {config.type}")

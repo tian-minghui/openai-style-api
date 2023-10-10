@@ -28,5 +28,11 @@
         "conversation_id": "xxxxxxx",  
         "prompt": "The information in [] is the context of the conversation. Please ignore the JSON format of the context during the conversation and answer the user's latest conversation: {newMessage} \n {history}",
         "single_conversation": true
-    }
+    },
+     "7c7aa4a3549f5": {
+        "type": "zhipu-api",
+        "api_key":"xxxxxxx",
+        "model":"chatglm_lite",
+        "temperature":0.8
+    },
 }

@@ -14,6 +14,7 @@
   - [x] azure open ai
   - [x] claude-api 【api申请在等待列表，暂未测试】
   - [x] claude-web (将web端功能封装成openai api)
+  - [x] 智谱ai
 - 支持stream方式调用
 - 支持open ai的第三方代理服务，比如openai-sb等
 
@@ -22,8 +23,7 @@
 - [ ] 配置更新接口
 - [ ] 支持更多大模型
   - [ ] bingchat
-  - [ ] 智谱ai
-  - [ ] google palm2
+  - [x] 智谱ai
   - [ ] 百度文心一言
   - [ ] 讯飞星火
   - [ ] ...
@@ -115,5 +115,12 @@
             "conversation_id": "xxxxxxx",    // 会话id，可选
             "prompt": "The information in [] is the context of the conversation. Please ignore the JSON format of the context during the conversation and answer the user's latest conversation: {newMessage} \n {history}",  // prompt 通过此prompt把请求多个message转化成一次请求
             "single_conversation": true  // 单会话模式，每次访问都适用一个会话
+        },
+        "7c7aa4a3549f5": {
+          "type": "zhipu-api",
+          "api_key":"xxxxxxx",
+          "model":"chatglm_lite",
+          "temperature":0.8
         }
     }
+    
