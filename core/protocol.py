@@ -51,6 +51,10 @@ class ChatCompletionResponseStreamChoice(BaseModel):
     delta: DeltaMessage
     finish_reason: Optional[Literal["stop", "length"]]
 
+class Usage(BaseModel):
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
 
 class ChatCompletionResponse(BaseModel):
     id: str = f"chatcmpl-{str(time.time())}"
@@ -60,3 +64,4 @@ class ChatCompletionResponse(BaseModel):
         Union[ChatCompletionResponseChoice, ChatCompletionResponseStreamChoice]
     ]
     created: Optional[int] = Field(default_factory=lambda: int(time.time()))
+    usage: Optional[Usage] = None

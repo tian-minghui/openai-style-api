@@ -1,6 +1,5 @@
 
 
-import json
 from typing import Dict, Iterator, List
 from core.adapters.base import ModelAdapter
 from core.protocol import ChatCompletionRequest, ChatCompletionResponse, ChatMessage
@@ -9,17 +8,14 @@ import time
 import cachetools.func
 import jwt
 from loguru import logger
-import requests
 from core.utils.util import num_tokens_from_string
 
 from core.utils.sse_client import SSEClient
-
+from core.utils.http_util import post, stream
 
 API_TOKEN_TTL_SECONDS = 3 * 60
 
 CACHE_TTL_SECONDS = API_TOKEN_TTL_SECONDS - 30
-
-api_timeout_seconds = 300
 
 
 @cachetools.func.ttl_cache(maxsize=10, ttl=CACHE_TTL_SECONDS)
@@ -49,35 +45,6 @@ headers = {
 }
 
 
-def post(api_url, token, params, timeout):
-    try:
-        headers.update({"Authorization": token})
-        resp = requests.post(
-            url=api_url, data=json.dumps(params), headers=headers, timeout=timeout
-        )
-        if requests.codes.ok != resp.status_code:
-            raise Exception("响应异常：" + resp.content)
-        return json.loads(resp.text)
-    except Exception as e:
-        logger.exception("请求异常", e)
-
-
-def stream(api_url, token, params, timeout):
-    try:
-        resp = requests.post(
-            api_url,
-            stream=True,
-            headers={"Authorization": token},
-            json=params,
-            timeout=timeout,
-        )
-        if requests.codes.ok != resp.status_code:
-            raise Exception("请求异常")
-        return resp
-    except Exception as e:
-        logger.exception("请求异常", e)
-
-
 class ZhiPuApiModel(ModelAdapter):
     """
     API 模型适配器
@@ -101,13 +68,15 @@ class ZhiPuApiModel(ModelAdapter):
         token = generate_token(self.api_key)
         params = self.convert_params(request)
         if request.stream:
-            data = stream(url, token, params, api_timeout_seconds)
+            data = stream(url, {"Authorization": token}, params)
             event_data = SSEClient(data)
             for event in event_data.events():
                 logger.debug(f"chat_completions event: {event}")
                 yield ChatCompletionResponse(**self.convert_response_stream(event, model))
         else:
-            data = post(url, token, params, api_timeout_seconds)
+            global headers
+            headers.update({"Authorization": token})
+            data = post(url, headers, params)
             logger.debug(f"chat_completions data: {data}")
             yield ChatCompletionResponse(**self.convert_response(data, model))
 
