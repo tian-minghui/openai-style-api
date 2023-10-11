@@ -37,7 +37,7 @@ def check_api_key(
         model = getModelByKey(token)
         if model is not None:
             return model
-
+        logger.warning(f"invalid api key,{token}")
     raise HTTPException(
         status_code=401,
         detail={
@@ -66,6 +66,7 @@ def create_chat_completion(request: ChatCompletionRequest, model: ModelAdapter =
     else:
         openai_response = next(resp)
         return JSONResponse(content=openai_response.model_dump(exclude_none=True))
+
 
 def run(port=8090, log_level="info", prefix=""):
     import uvicorn

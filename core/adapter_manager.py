@@ -38,7 +38,7 @@ def getModelByKey(key: str) -> ModelAdapter:
     config = key2Config.get(key)
     if config is not None:
         return getModel(config)
-    raise ValueError(f"unknown model key: {key}")
+    return None
 
 
 model_instance_dict = {}
