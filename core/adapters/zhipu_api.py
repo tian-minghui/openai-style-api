@@ -54,6 +54,8 @@ class ZhiPuApiModel(ModelAdapter):
         super().__init__(**kwargs)
         self.api_key = kwargs.pop("api_key", None)
         self.model = kwargs.pop("model", None)
+        self.prompt = kwargs.pop(
+            "prompt", "You need to follow the system settings:{system}")
         self.config_args = kwargs
 
     def chat_completions(self, request: ChatCompletionRequest) -> Iterator[ChatCompletionResponse]:
@@ -145,7 +147,10 @@ class ZhiPuApiModel(ModelAdapter):
         if req_args.get("temperature"):
             params["temperature"] = req_args.get("temperature")
         if req_args.get("top_p"):
-            params["top_p"] = req_args.get("top_p")
+            top_p = req_args.get("top_p")  # zhipu 范围在(0,1)开区间，默认值0.7
+            if top_p == 1:
+                top_p = 0.7
+            params["top_p"] = top_p
         return params
 
     def convert_messages_to_prompt(self, messages: List[ChatMessage]) -> List[Dict[str, str]]:
@@ -156,6 +161,10 @@ class ZhiPuApiModel(ModelAdapter):
                 raise Exception(f"不支持的功能:{role}")
             if role == "system":  # 将system转为user   这里可以使用  CharacterGLM
                 role = "user"
-            content = message.content
-            prompt.append({"role": role, "content": content})
+                content = self.prompt.format(system=message.content)
+                prompt.append({"role": role, "content": content})
+                prompt.append({"role": "assistant", "content": "ok"})
+            else:
+                content = message.content
+                prompt.append({"role": role, "content": content})
         return prompt

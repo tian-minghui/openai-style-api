@@ -6,6 +6,7 @@ from core.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
 from core.utils.util import num_tokens_from_string
 import time
+from core.utils.http_util import post, stream
 
 # 默认的model映射，不过request中的model参数会被config覆盖
 model_map = {
@@ -27,6 +28,8 @@ role_map = {
 }
 
 # 参考  https://github.com/jtsang4/claude-to-chatgpt
+
+
 class ClaudeModel(ModelAdapter):
 
     def __init__(self, **kwargs):
@@ -49,11 +52,8 @@ class ClaudeModel(ModelAdapter):
             "content-type": "application/json",
             "anthropic-version": self.anthropic_version,
         }
-        response = requests.post(url, data=json.dumps(
-            claude_params), headers=headers)
-        if response.is_error:
-            raise Exception(f"Error: {response.status_code}")
         if request.stream:
+            response = stream(url, headers, claude_params)
             for chunk in response.iter_lines(chunk_size=1024):
                 # 移除头部data: 字符
                 decoded_line = chunk.decode('utf-8')
@@ -80,8 +80,8 @@ class ClaudeModel(ModelAdapter):
                 if openai_response:
                     yield ChatCompletionResponse(**openai_response)
         else:
-            claude_response = response.json()
-            openai_response = self.claude_to_chatgpt_response(claude_response)
+            response = post(url, headers, claude_params)
+            openai_response = self.claude_to_chatgpt_response(response)
             yield ChatCompletionResponse(**openai_response)
 
     def convert_messages_to_prompt(self, messages):

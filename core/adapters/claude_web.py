@@ -28,7 +28,8 @@ class ClaudeWebModel(ModelAdapter):
         if len(messages) < 2:
             return messages[0].content
         newMessage = messages[-1].content
-        history = [message.model_dump(exclude_none=True) for message in messages[:len(messages)-1]]
+        history = [message.model_dump(exclude_none=True)
+                   for message in messages[:len(messages)-1]]
         return self.prompt.format(newMessage=newMessage, history=history)
 
     def chat_completions(self, request: ChatCompletionRequest) -> Iterator[ChatCompletionResponse]:
@@ -50,7 +51,7 @@ class ClaudeWebModel(ModelAdapter):
             "id": f"chatcmpl-{str(time.time())}",
             "object": "chat.completion",
             "created": int(time.time()),
-            "model": "gpt-3.5-turbo",
+            "model": "claude-2",
             "usage": {
                 "prompt_tokens": 0,
                 "completion_tokens": completion_tokens,
