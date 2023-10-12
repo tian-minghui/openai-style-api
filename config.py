@@ -1,5 +1,5 @@
 import json
-from typing import Dict
+from typing import Dict, List
 
 from pydantic import BaseModel
 from loguru import logger
@@ -19,11 +19,9 @@ def load_model_config():
     with open(config_path) as f:
         data = json.load(f)
         for config in data:
-            type = config.pop("type")
-            token = config.pop("token")
-            args = config
-            model_config = ModelConfig(token=token, type=type, config=args)
-            token_2_modelconfig[token] = model_config
+            model_config = ModelConfig(token=config.get(
+                "token"), type=config.get("type"), config=config.get("config"))
+            token_2_modelconfig[config.get("token")] = model_config
     logger.info(
         f"load model config from {config_path}, token_2_modelconfig:{token_2_modelconfig}")
 
@@ -33,7 +31,23 @@ def get_model_config(token):
 
 
 def get_all_model_config():
-    return token_2_modelconfig.values()
+    return [config.model_dump(exclude_none=True) for config in token_2_modelconfig.values()]
+
+
+def update_model_config(config: List[ModelConfig]):
+    """
+    更新模型配置
+    :param json_str:
+    :return:
+    """
+    for config in config:
+        token = config.token
+        token_2_modelconfig[token] = config
+    with open(config_path, "w") as f:
+        json.dump([config.model_dump()
+                  for config in token_2_modelconfig.values()], f)
+    logger.info(f"update model config to {config_path}")
+    load_model_config()
 
 
 if __name__ == "__main__":

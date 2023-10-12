@@ -5,3 +5,5 @@ services:
     command: python open-api.py
     ports:
       - "8090:8090"
+    environment:
+      - ADMIN-TOKEN=admin

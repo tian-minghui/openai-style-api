@@ -33,16 +33,17 @@ Shield the differences between different large model APIs and use large models i
 1. Clone the project
 2. `cp model-config.template model-config.json` and modify the configuration file model-config.json as needed
 
-        `{
-          "f2b7295fc440db7f": {  # This is the mapped api-key
-              "type": "azure",  # Model type
-              "end_point": "https://xxx.openai.azure.com/", # azure model configuration
-              "deployment_id": "gpt-35-turbo", # azure model configuration   
-              "api_version": "2023-05-15", # azure model configuration
-              "api_key": "xxxxxxxxxxxxxxxxxxxx", # azure model configuration
-              "temperature": 0.8 # azure model configuration   
+        {
+          "token": "f2b7295fc440db7f",
+          "type": "azure",
+          "config": {
+              "api_base": "https://xxxx.openai.azure.com/",
+              "deployment_id": "xxxx",
+              "api_version": "2023-05-15",
+              "api_key": "xxxx",
+              "temperature": 0.8
           }
-        }`
+        }
         
 3. For local deployment, run `pip install -r requirements.txt` and then run `python open-api.py`. For docker deployment, execute `docker compose up -d` in the directory.
 4. With api-base: localhost:8090 and api-key: f2b7295fc440db7f, you can start using it. Here are some examples:
@@ -81,46 +82,61 @@ Shield the differences between different large model APIs and use large models i
 ### Third party applications 
 
 [ChatGPT Next Web](https://github.com/Yidadaa/ChatGPT-Next-Web)
-![Alt text](image.png)
+![Alt text](img/image.png)
 
 
 ## config example
+    [
     {
-        "f2b7295fc440db7f": {
-            "type": "azure",
+        "token": "f2b7295fc440db7f",
+        "type": "azure",
+        "config": {
             "api_base": "https://xxxx.openai.azure.com/",
             "deployment_id": "gpt-35-turbo",
             "api_version": "2023-05-15",
-            "api_key": "xxxxxxxxxx",
+            "api_key": "xxxxxx",
             "temperature": 0.8
-        },
-        "GxqT3BlbkFJj": {
-            "type": "openai",
+        }
+    },
+    {
+        "token": "GxqT3BlbkFJj",
+        "type": "openai",
+        "config": {
             "api_base": "https://api.openai.com/v1/",
-            "api_key": "xxxxxxxxxx",
+            "api_key": "sk-xxxxxx",
             "model": "gpt-3.5-turbo"
-        },
-        "sb-ede1529390cc": {
-            "type": "proxy",  // 代理类型
+        }
+    },
+    {
+        "token": "sb-ede1529390cc",
+        "type": "proxy",
+        "config": {
             "api_base": "https://api.openai-sb.com/v1/",
-            "api_key": "xxxxxxxxxx",
+            "api_key": "sb-xxxxxx",
             "model": "gpt-3.5-turbo"
-        },
-        "c115c8f5082": {
-            "type": "claude-web",  
-            "cookie": "xxxxxxxxxx",  // claude web cookie
-            "proxies": {  // 代理，解决一些国家和地区不可用
+        }
+    },
+    {
+        "token": "c115c8f5082",
+        "type": "claude-web",
+        "config": {
+            "cookie": "xxxxxx",
+            "proxies": {
                 "https": "http://localhost:7890"
             },
-            "conversation_id": "xxxxxxx",    // 会话id，可选
-            "prompt": "The information in [] is the context of the conversation. Please ignore the JSON format of the context during the conversation and answer the user's latest conversation: {newMessage} \n {history}",  // prompt 通过此prompt把请求多个message转化成一次请求
-            "single_conversation": true  // 单会话模式，每次访问都适用一个会话
-        },
-        "7c7aa4a3549f5": {
-          "type": "zhipu-api",
-          "api_key":"xxxxxxx",
-          "model":"chatglm_lite",
-          "temperature":0.8
+            "conversation_id": "xxxxxx",
+            "prompt": "The information in [] is the context of the conversation. Please ignore the JSON format of the context during the conversation and answer the user's latest conversation: {newMessage} \n {history}",
+            "single_conversation": true
+        }
+    },
+    {
+        "token": "7c7aa4a3549f5",
+        "type": "zhipu-api",
+        "config": {
+            "api_key": "xxxxxx",
+            "model": "chatglm_lite",
+            "temperature": 0.8,
+            "top_p": 0.7
         }
     }
-    
+]
