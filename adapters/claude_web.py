@@ -1,9 +1,9 @@
 from typing import Iterator
-from core.adapters.base import ModelAdapter
-from core.protocol import ChatCompletionRequest, ChatCompletionResponse
+from adapters.base import ModelAdapter
+from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
-from core.utils.util import num_tokens_from_string
-from core.clients.claude_web_client import ClaudeWebClient
+from utils.util import num_tokens_from_string
+from clients.claude_web_client import ClaudeWebClient
 import time
 
 

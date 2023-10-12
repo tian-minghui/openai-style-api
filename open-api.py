@@ -4,12 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.routing import APIRouter
-from core.adapters.base import ModelAdapter
-from core.protocol import ChatCompletionRequest, ChatCompletionResponse
+from adapters.base import ModelAdapter
+from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from typing import Iterator, Optional
-from core.adapter_manager import getModelByKey
+from adapters.adapter_factory import get_adapter
 from loguru import logger
-
+from config import get_model_config, load_model_config
+import os
 
 router = APIRouter()
 
@@ -34,9 +35,9 @@ def check_api_key(
     logger.info(f"auth: {auth}")
     if auth and auth.credentials:
         token = auth.credentials
-        model = getModelByKey(token)
-        if model is not None:
-            return model
+        adaptor = get_adapter_by_token(token)
+        if adaptor is not None:
+            return adaptor
         logger.warning(f"invalid api key,{token}")
     raise HTTPException(
         status_code=401,
@@ -55,6 +56,12 @@ def convert(resp: Iterator[ChatCompletionResponse]):
     for response in resp:
         yield f"data: {response.model_dump_json(exclude_none=True)}\n\n"
     yield "data: [DONE]\n\n"
+
+
+def get_adapter_by_token(token: str):
+    model_config = get_model_config(token)
+    if model_config is not None:
+        return get_adapter(model_config.token, model_config.type, **model_config.config)
 
 
 @router.post("/v1/chat/completions")
@@ -76,4 +83,5 @@ def run(port=8090, log_level="info", prefix=""):
 
 
 if __name__ == '__main__':
+    load_model_config()
     run()

@@ -29,7 +29,7 @@ def multiple_messages_test(**kwargs):
 if __name__ == "__main__":
     api_key = sys.argv[1]
     openai.api_key = api_key
-    # single_message_test()
-    single_message_test(stream=True)
+    single_message_test()
+    # single_message_test(stream=True)
     # multiple_messages_test()
     # multiple_messages_test(stream=True)

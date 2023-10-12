@@ -1,7 +1,7 @@
 
 
 from typing import Union, Iterator
-from core.protocol import ChatCompletionRequest, ChatCompletionResponse
+from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 
 
 class ModelAdapter:

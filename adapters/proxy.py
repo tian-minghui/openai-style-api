@@ -1,9 +1,9 @@
 import json
 from typing import Iterator
-from core.adapters.base import ModelAdapter
-from core.protocol import ChatCompletionRequest, ChatCompletionResponse
+from adapters.base import ModelAdapter
+from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
-from core.utils.http_util import stream, post
+from utils.http_util import stream, post
 
 
 class ProxyAdapter(ModelAdapter):

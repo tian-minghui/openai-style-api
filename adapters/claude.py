@@ -1,12 +1,12 @@
 import json
 from typing import Iterator
 import requests
-from core.adapters.base import ModelAdapter
-from core.protocol import ChatCompletionRequest, ChatCompletionResponse
+from adapters.base import ModelAdapter
+from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
-from core.utils.util import num_tokens_from_string
+from utils.util import num_tokens_from_string
 import time
-from core.utils.http_util import post, stream
+from utils.http_util import post, stream
 
 # 默认的model映射，不过request中的model参数会被config覆盖
 model_map = {

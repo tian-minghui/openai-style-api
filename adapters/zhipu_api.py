@@ -1,17 +1,17 @@
 
 
 from typing import Dict, Iterator, List
-from core.adapters.base import ModelAdapter
-from core.protocol import ChatCompletionRequest, ChatCompletionResponse, ChatMessage
+from adapters.base import ModelAdapter
+from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse, ChatMessage
 import time
 
 import cachetools.func
 import jwt
 from loguru import logger
-from core.utils.util import num_tokens_from_string
+from utils.util import num_tokens_from_string
 
-from core.utils.sse_client import SSEClient
-from core.utils.http_util import post, stream
+from utils.sse_client import SSEClient
+from utils.http_util import post, stream
 
 API_TOKEN_TTL_SECONDS = 3 * 60
 
