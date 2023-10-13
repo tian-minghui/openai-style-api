@@ -29,6 +29,7 @@ def get_adapter(instanceKey: str, type: str, **kwargs) -> ModelAdapter:
 
     elif type == "zhipu-api":
         model = ZhiPuApiModel(**kwargs)
+
     else:
         raise ValueError(f"unknown model type: {type}")
 

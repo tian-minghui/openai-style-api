@@ -11,3 +11,5 @@ COPY requirements.txt .
 RUN pip install --no-cache -r requirements.txt 
 
 COPY . ${BUILD_PREFIX}/
+
+# ENTRYPOINT [ "python", "open-ai.py]
