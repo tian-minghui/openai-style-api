@@ -33,8 +33,8 @@ class ChatCompletionRequest(BaseModel):
     model: Optional[str] = "gpt-3.5-turbo"
     messages: List[ChatMessage]
     functions: Optional[List[Dict]] = None
-    temperature: Optional[float] = None
-    top_p: Optional[float] = None
+    temperature: Optional[float] = None  # between 0 and 2    Defaults to 1
+    top_p: Optional[float] = None  # Defaults to 1
     max_length: Optional[int] = None
     stream: Optional[bool] = False
     stop: Optional[List[str]] = None
@@ -51,10 +51,12 @@ class ChatCompletionResponseStreamChoice(BaseModel):
     delta: DeltaMessage
     finish_reason: Optional[Literal["stop", "length"]]
 
+
 class Usage(BaseModel):
     prompt_tokens: int = 0
     completion_tokens: int = 0
     total_tokens: int = 0
+
 
 class ChatCompletionResponse(BaseModel):
     id: str = f"chatcmpl-{str(time.time())}"

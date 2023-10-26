@@ -1,5 +1,3 @@
-
-
 import json
 from loguru import logger
 from adapters.azure import AzureAdapter
@@ -8,6 +6,7 @@ from adapters.claude import ClaudeModel
 from adapters.claude_web import ClaudeWebModel
 from adapters.proxy import ProxyAdapter
 from adapters.zhipu_api import ZhiPuApiModel
+from adapters.xunfei_spark import XunfeiSparkAPIModel
 
 model_instance_dict = {}
 
@@ -29,6 +28,9 @@ def get_adapter(instanceKey: str, type: str, **kwargs) -> ModelAdapter:
 
     elif type == "zhipu-api":
         model = ZhiPuApiModel(**kwargs)
+
+    elif type == "xunfei-spark-api":
+        model = XunfeiSparkAPIModel(**kwargs)
 
     else:
         raise ValueError(f"unknown model type: {type}")
