@@ -160,5 +160,3 @@ cython_debug/
 #.idea/
 
 model-config.json
-
-.test.py

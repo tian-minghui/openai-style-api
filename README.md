@@ -7,6 +7,7 @@
 ## 用途
 屏蔽不同大模型API的差异，统一用openai api标准格式使用大模型; 配置化管理不同大模型调用参数，让你在使用大模型的时候只需关注 api-key 和 messages
 
+ ***README_EN.md may not have been updated in a timely manner***
 ## 功能
 
 - [x] 支持多种大模型，当前已支持
@@ -17,12 +18,13 @@
   - [x] 智谱ai
   - [ ] bingchat
   - [ ] 百度文心一言
-  - [ ] 讯飞星火
+  - [x] 讯飞星火
   - [ ] ...
 - [x] 支持stream方式调用
 - [x] 支持open ai的第三方代理服务，比如openai-sb等
 - [x] 支持在线更新配置 `http://0.0.0.0:8090/`（这个前端页面和交互完全是用gpt写的 哈哈）
 - [ ] 支持负载均衡，一个key可轮训/随机/并行等访问多个模型
+- [ ] 错误和异常处理优化，对齐openai errorcode
 
 
 ## 快速开始
@@ -134,6 +136,17 @@
             "model": "chatglm_lite",
             "temperature": 0.8,
             "top_p": 0.7
+        }
+    },
+    {
+        "token": "7c7aa4a3549f11",
+        "type": "xunfei-spark-api",
+        "config": {
+            "app_id": "xxxx",
+            "api_key": "xxxx",
+            "api_secret": "xxxxxx",
+            "api_model_version": "v2.0",
+            "top_k": 5
         }
     }
 ]

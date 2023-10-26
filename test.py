@@ -1,6 +1,7 @@
 import openai
 import sys
 import json
+import time
 
 openai.api_base = "http://localhost:8090/v1"
 
@@ -38,7 +39,10 @@ def multiple_messages_test(**kwargs):
 if __name__ == "__main__":
     api_key = sys.argv[1]
     openai.api_key = api_key
-    # single_message_test()
-    # single_message_test(stream=True)
+    single_message_test()
+    time.sleep(2)
+    single_message_test(stream=True)
+    time.sleep(2)
     multiple_messages_test()
+    time.sleep(2)
     multiple_messages_test(stream=True)
