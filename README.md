@@ -5,7 +5,7 @@
 # openai-style-api
 
 ## 用途
-屏蔽不同大模型API的差异，统一用openai api标准格式使用大模型; 配置化管理不同大模型调用参数，让你在使用大模型的时候只需关注 api-key 和 messages
+屏蔽不同大模型API的差异，统一用openai api标准格式使用大模型, 也可以用来做api-key的二次分发管理; 配置化管理不同大模型调用参数，让你在使用大模型的时候只需关注 api-key 和 messages
 
  ***README_EN.md may not have been updated in a timely manner***
 ## 功能
@@ -29,7 +29,7 @@
 
 ## 快速开始
 
-1. git clone 拉取项目代码
+1. `git clone https://github.com/tian-minghui/openai-style-api.git` 拉取项目代码
 2. `cp model-config.template model-config.json`  并按需修改配置文件model-config.json
  
         {
@@ -45,8 +45,7 @@
         }
 
 4. 本地化部署直接 `pip install -r  requirements.txt` 后，运行 `python open-api.py`,  docker部署在目录下执行 `docker compose up -d`
-5. 有了api-base: localhost:8090 和 api-key:f2b7295fc440db7f 可以使用了，下边列举了几种使用
-`
+5. 有了api-base: localhost:8090 和 api-key:f2b7295fc440db7f 可以使用了，下边列举了几种使用方式
 
 ## 使用方式
 
@@ -149,4 +148,4 @@
             "top_k": 5
         }
     }
-]
+    ]
