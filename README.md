@@ -87,7 +87,7 @@
     [
     {
         "token": "f2b7295fc440db7f",
-        "type": "azure",
+        "type": "azure",  // azure openai 模型
         "config": {
             "api_base": "https://xxxx.openai.azure.com/",
             "deployment_id": "gpt-35-turbo",
@@ -98,7 +98,7 @@
     },
     {
         "token": "GxqT3BlbkFJj",
-        "type": "openai",
+        "type": "openai", // openai 模型
         "config": {
             "api_base": "https://api.openai.com/v1/",
             "api_key": "sk-xxxxxx",
@@ -107,7 +107,7 @@
     },
     {
         "token": "sb-ede1529390cc",
-        "type": "proxy",
+        "type": "proxy",  // openai 代理 
         "config": {
             "api_base": "https://api.openai-sb.com/v1/",
             "api_key": "sb-xxxxxx",
@@ -116,7 +116,7 @@
     },
     {
         "token": "c115c8f5082",
-        "type": "claude-web",
+        "type": "claude-web",  // claude-web 
         "config": {
             "cookie": "xxxxxx",
             "proxies": {
@@ -129,7 +129,7 @@
     },
     {
         "token": "7c7aa4a3549f5",
-        "type": "zhipu-api",
+        "type": "zhipu-api",  // 智谱API
         "config": {
             "api_key": "xxxxxx",
             "model": "chatglm_lite",
@@ -139,13 +139,24 @@
     },
     {
         "token": "7c7aa4a3549f11",
-        "type": "xunfei-spark-api",
+        "type": "xunfei-spark-api", // 讯飞星火API
         "config": {
             "app_id": "xxxx",
             "api_key": "xxxx",
             "api_secret": "xxxxxx",
             "api_model_version": "v2.0",
             "top_k": 5
+        }
+    },
+    {
+        "token": "7c7aa4a3549f12",
+        "type": "router", // 路由  可以包含多个模型进行负载均衡
+        "config": {
+            "router_strategy": "round-robin", // 路由策略  round-robin 轮询   random 随机
+            "token_pool": [   // 路由的token池
+                "7c7aa4a3549f11",
+                "7c7aa4a3549f5"
+            ]
         }
     }
     ]
