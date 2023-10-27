@@ -8,9 +8,15 @@ from pydantic import BaseModel
 from adapters.base import ModelAdapter
 from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from typing import Iterator, List, Optional
-from adapters.adapter_factory import get_adapter, clear_instances
+from adapters.adapter_factory import get_adapter
 from loguru import logger
-from config import ModelConfig, get_model_config, load_model_config, get_all_model_config, update_model_config
+from config import (
+    ModelConfig,
+    get_model_config,
+    load_model_config,
+    get_all_model_config,
+    update_model_config,
+)
 import os
 from fastapi.staticfiles import StaticFiles
 
@@ -19,7 +25,7 @@ admin_token = "admin"
 
 
 def create_app():
-    """ create fastapi app server """
+    """create fastapi app server"""
     app = FastAPI()
     app.add_middleware(
         CORSMiddleware,
@@ -33,7 +39,8 @@ def create_app():
 
 def check_api_key(
     auth: Optional[HTTPAuthorizationCredentials] = Depends(
-        HTTPBearer(auto_error=False)),
+        HTTPBearer(auto_error=False)
+    ),
 ):
     logger.info(f"auth: {auth}")
     if auth and auth.credentials:
@@ -48,8 +55,8 @@ def check_api_key(
             "error": {
                 "message": "",
                 "type": "invalid_request_error",
-                        "param": None,
-                        "code": "invalid_api_key",
+                "param": None,
+                "code": "invalid_api_key",
             }
         },
     )
@@ -57,7 +64,8 @@ def check_api_key(
 
 def check_admin_token(
     auth: Optional[HTTPAuthorizationCredentials] = Depends(
-        HTTPBearer(auto_error=False)),
+        HTTPBearer(auto_error=False)
+    ),
 ):
     logger.info(f"auth: {auth}")
     if auth and auth.credentials:
@@ -71,8 +79,8 @@ def check_admin_token(
             "error": {
                 "message": "",
                 "type": "invalid_request_error",
-                        "param": None,
-                        "code": "invalid_token",
+                "param": None,
+                "code": "invalid_token",
             }
         },
     )
@@ -87,11 +95,13 @@ def convert(resp: Iterator[ChatCompletionResponse]):
 def get_adapter_by_token(token: str):
     model_config = get_model_config(token)
     if model_config is not None:
-        return get_adapter(model_config.token, model_config.type, **model_config.config)
+        return get_adapter(model_config.token)
 
 
 @router.post("/v1/chat/completions")
-def create_chat_completion(request: ChatCompletionRequest, model: ModelAdapter = Depends(check_api_key)):
+def create_chat_completion(
+    request: ChatCompletionRequest, model: ModelAdapter = Depends(check_api_key)
+):
     logger.info(f"request: {request},  model: {model}")
     resp = model.chat_completions(request)
     if request.stream:
@@ -124,19 +134,19 @@ class ModelConfigRequest(BaseModel):
 @router.post("/updateModelConfig")
 def update_config(request: List[ModelConfig], token=Depends(check_admin_token)):
     update_model_config(request)
-    clear_instances()
     return {"success": True}
 
 
 def run(port=8090, log_level="info", prefix=""):
     import uvicorn
+
     app = create_app()
     app.include_router(router, prefix=prefix)
     app.mount("/static", StaticFiles(directory="dist"), name="static")
     uvicorn.run(app, host="0.0.0.0", port=port, log_level=log_level)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     load_model_config()
     env_token = os.getenv("ADMIN-TOKEN")
     if env_token:

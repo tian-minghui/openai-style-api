@@ -24,8 +24,8 @@ def multiple_messages_test(**kwargs):
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": "你好"},
-            {"role": "assistant", "content": "你好!很高兴认识你。我是AI助手。请告诉我,我如何为您提供帮助?"},
-            {"role": "user", "content": "你能有什么样的能力？"},
+            {"role": "assistant", "content": "你好!很高兴认识你。"},
+            {"role": "user", "content": "你是谁？"},
         ],
         **kwargs,
     )
