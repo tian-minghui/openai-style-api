@@ -9,18 +9,19 @@ def post(api_url, headers: dict, params: dict, timeout=api_timeout_seconds):
     resp = None
     try:
         resp = requests.post(
-            url=api_url, headers=headers, data=json.dumps(params),  timeout=timeout
+            url=api_url, headers=headers, data=json.dumps(params), timeout=timeout
         )
         if requests.codes.ok != resp.status_code:
             logger.error(f"响应异常：{resp_text(resp)}")
-            raise Exception("响应异常：" + resp.content)
+            raise Exception("响应异常：" + resp_text(resp))
         return json.loads(resp.text)
     except Exception as e:
         logger.exception("请求异常", e)
         raise e
     finally:
         logger.debug(
-            f"【http.post】 请求url：{api_url}, headers:{headers}, params:{params}, resp:{resp_text(resp)}")
+            f"【http.post】 请求url：{api_url}, headers:{headers}, params:{params}, resp:{resp_text(resp)}"
+        )
 
 
 def resp_text(resp):
@@ -49,4 +50,5 @@ def stream(api_url, headers: dict, params: dict, timeout=api_timeout_seconds):
         logger.exception("请求异常", e)
     finally:
         logger.debug(
-            f"【http.stream】 请求url：{api_url}, headers:{headers}, params:{params}")
+            f"【http.stream】 请求url：{api_url}, headers:{headers}, params:{params}"
+        )
