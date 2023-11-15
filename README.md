@@ -24,6 +24,7 @@
 - [x] 支持open ai的第三方代理服务，比如openai-sb等
 - [x] 支持在线更新配置 `http://0.0.0.0:8090/`（这个前端页面和交互完全是用gpt写的 哈哈）
 - [x] 支持负载均衡，一个key可轮训/随机/并行等访问多个模型
+- [x] 支持按照model_name进行路由
 - [ ] 错误和异常处理优化，对齐openai errorcode
 
 
@@ -157,6 +158,17 @@
                 "7c7aa4a3549f11",
                 "7c7aa4a3549f5"
             ]
+        }
+    },
+    {
+        "token": "7c7aa4a3549f13",
+        "type": "model-name-router", //根据req中的modelname进行路由, 可以方便的结合ChatGPT-Next-Web
+        "config": {
+            "model-2-token": {   // 路由的token池
+                "spark-api-v2.0":"7c7aa4a3549f11",
+                "chatglm_lite": "7c7aa4a3549f5",
+                "router-round-robin": "7c7aa4a3549f12"
+            }
         }
     }
     ]

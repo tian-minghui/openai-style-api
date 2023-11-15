@@ -50,5 +50,40 @@
             "temperature": 0.8,
             "top_p": 0.7
         }
+    },
+    {
+        "token": "xunfei-spark-api-7c7aa4a3549f11",
+        "type": "xunfei-spark-api",
+        "config": {
+            "app_id": "xxxx",
+            "api_key": "xxxx",
+            "api_secret": "xxxx",
+            "api_model_version": "v2.0",
+            "top_k": 5
+        }
+    },
+    {
+        "token": "router-7c7aa4a3549f12",
+        "type": "router",
+        "config": {
+            "router_strategy": "round-robin",
+            "token_pool": [
+                "xunfei-spark-api-7c7aa4a3549f11",
+                "zhipu-api-7c7aa4a3549f5"
+            ]
+        }
+    },
+    {
+        "token": "model-name-router-7c7aa4a3549f12",
+        "type": "model-name-router",
+        "config": {
+            "model-2-token": {
+                "default": "7c7aa4a3549f11",
+                "spark-api-v2.0": "7c7aa4a3549f11",
+                "chatglm_lite": "7c7aa4a3549f5",
+                "azure-gpt-35-turbo": "f2b7295fc440db7f",
+                "router-round-robin": "router-7c7aa4a3549f12"
+            }
+        }
     }
 ]

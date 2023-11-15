@@ -1,4 +1,3 @@
-import json
 from loguru import logger
 from adapters.azure import AzureAdapter
 from adapters.base import ModelAdapter
@@ -8,6 +7,7 @@ from adapters.proxy import ProxyAdapter
 from adapters.zhipu_api import ZhiPuApiModel
 from adapters.xunfei_spark import XunfeiSparkAPIModel
 from adapters.router_adapter import RouterAdapter
+from adapters.model_name_router_adapter import ModelNameRouterAdapter
 
 model_instance_dict = {}
 
@@ -43,7 +43,8 @@ def init_adapter(instanceKey: str, type: str, **kwargs) -> ModelAdapter:
 
         elif type == "router":
             model = RouterAdapter(factory_method=get_adapter, **kwargs)
-
+        elif type == "model-name-router":
+            model = ModelNameRouterAdapter(factory_method=get_adapter, **kwargs)
         else:
             raise ValueError(f"unknown model type: {type}")
     except Exception as e:
