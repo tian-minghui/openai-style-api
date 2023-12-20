@@ -5,11 +5,17 @@ from loguru import logger
 api_timeout_seconds = 300
 
 
-def post(api_url, headers: dict, params: dict, timeout=api_timeout_seconds):
+def post(
+    api_url, headers: dict, params: dict, timeout=api_timeout_seconds, proxies=None
+):
     resp = None
     try:
         resp = requests.post(
-            url=api_url, headers=headers, data=json.dumps(params), timeout=timeout
+            url=api_url,
+            headers=headers,
+            data=json.dumps(params),
+            timeout=timeout,
+            proxies=proxies,
         )
         if requests.codes.ok != resp.status_code:
             logger.error(f"响应异常：{resp_text(resp)}")
@@ -31,7 +37,9 @@ def resp_text(resp):
     return resp_str
 
 
-def stream(api_url, headers: dict, params: dict, timeout=api_timeout_seconds):
+def stream(
+    api_url, headers: dict, params: dict, timeout=api_timeout_seconds, proxies=None
+):
     resp = None
     try:
         resp = requests.post(
@@ -41,6 +49,7 @@ def stream(api_url, headers: dict, params: dict, timeout=api_timeout_seconds):
             json=params,
             # data=json.dumps(params),
             timeout=timeout,
+            proxies=proxies,
         )
         if requests.codes.ok != resp.status_code:
             logger.error(f"响应异常：{resp.text}")

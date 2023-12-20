@@ -19,6 +19,7 @@
   - [ ] bingchat
   - [ ] 百度文心一言
   - [x] 讯飞星火
+  - [x] gemini
   - [ ] ...
 - [x] 支持stream方式调用
 - [x] 支持open ai的第三方代理服务，比如openai-sb等
@@ -168,6 +169,16 @@
                 "spark-api-v2.0":"7c7aa4a3549f11",
                 "chatglm_lite": "7c7aa4a3549f5",
                 "router-round-robin": "7c7aa4a3549f12"
+            }
+        }
+    },
+    {
+        "token": "gemini-7c7aa4a3549f5",
+        "type": "gemini",
+        "config": {
+            "api_key": "xxxxx",
+            "proxies": {
+                "https": "http://localhost:7890"
             }
         }
     }
