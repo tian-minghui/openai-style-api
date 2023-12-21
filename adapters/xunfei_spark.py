@@ -136,7 +136,7 @@ class XunfeiSparkAPIModel(ModelAdapter):
             },
             "choices": [
                 {
-                    "delta": {
+                    "message": {
                         "role": "assistant",
                         "content": "".join(completions),
                     },

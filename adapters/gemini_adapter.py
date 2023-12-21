@@ -109,7 +109,37 @@ class GeminiAdapter(ModelAdapter):
         )
         params = self.convert_2_gemini_param(request)
         response = post(url, headers=headers, proxies=self.proxies, params=params)
-        yield ChatCompletionResponse(**self.response_convert(response))
+        if request.stream:  # 假的stream
+            openai_response = self.response_convert_stream(response)
+        else:
+            openai_response = self.response_convert(response)
+        yield ChatCompletionResponse(**openai_response)
+
+    def response_convert_stream(self, data):
+        completion = data["candidates"][0]["content"]["parts"][0]["text"]
+        completion_tokens = num_tokens_from_string(completion)
+        openai_response = {
+            "id": str(uuid.uuid1()),
+            "object": "chat.completion.chunk",
+            "created": int(time.time()),
+            "model": self.model,
+            "usage": {
+                "prompt_tokens": 0,
+                "completion_tokens": completion_tokens,
+                "total_tokens": completion_tokens,
+            },
+            "choices": [
+                {
+                    "delta": {
+                        "role": "assistant",
+                        "content": completion,
+                    },
+                    "index": 0,
+                    "finish_reason": "stop",
+                }
+            ],
+        }
+        return openai_response
 
     def response_convert(self, data):
         completion = data["candidates"][0]["content"]["parts"][0]["text"]
