@@ -4,6 +4,9 @@
 
 # openai-style-api
 
+
+ ***欢迎有兴趣的大佬提PR***
+
 ## 用途
 屏蔽不同大模型API的差异，统一用openai api标准格式使用大模型, 也可以用来做api-key的二次分发管理; 配置化管理不同大模型调用参数，让你在使用大模型的时候只需关注 api-key 和 messages
 
