@@ -28,6 +28,10 @@ MODEL_MAP = {
         "domain": "generalv3",
         "url": "wss://spark-api.xf-yun.com/v3.1/chat",
     },
+    "v3.5": {
+        "domain": "generalv3.5",
+        "url": "wss://spark-api.xf-yun.com/v3.5/chat",
+    },
 }
 
 
