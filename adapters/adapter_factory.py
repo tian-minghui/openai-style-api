@@ -9,6 +9,7 @@ from adapters.xunfei_spark import XunfeiSparkAPIModel
 from adapters.router_adapter import RouterAdapter
 from adapters.model_name_router_adapter import ModelNameRouterAdapter
 from adapters.gemini_adapter import GeminiAdapter
+from adapters.bing_sydney import BingSydneyModel
 
 model_instance_dict = {}
 
@@ -48,6 +49,8 @@ def init_adapter(instanceKey: str, type: str, **kwargs) -> ModelAdapter:
             model = ModelNameRouterAdapter(factory_method=get_adapter, **kwargs)
         elif type == "gemini":
             model = GeminiAdapter(**kwargs)
+        elif type == "bing-sydney":
+            model = BingSydneyModel(**kwargs)
         else:
             raise ValueError(f"unknown model type: {type}")
     except Exception as e:

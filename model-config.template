@@ -85,5 +85,13 @@
                 "router-round-robin": "router-7c7aa4a3549f12"
             }
         }
+    },
+    {
+        "token": "bing-7c7aa4a3549f5",
+        "type": "bing-sydney",
+        "config": {
+            "cookie": "xxxxx",
+            "style": "balanced"
+        }
     }
 ]

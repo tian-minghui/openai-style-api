@@ -1,6 +1,3 @@
-<p align="right">
-   <strong>中文</strong> | <a href="./README_EN.md">English</a>
-</p>
 
 # openai-style-api
 
@@ -10,7 +7,6 @@
 ## 用途
 屏蔽不同大模型API的差异，统一用openai api标准格式使用大模型, 也可以用来做api-key的二次分发管理; 配置化管理不同大模型调用参数，让你在使用大模型的时候只需关注 api-key 和 messages
 
- ***README_EN.md may not have been updated in a timely manner***
 ## 功能
 
 - [x] 支持多种大模型，当前已支持
@@ -19,7 +15,7 @@
   - [x] claude-api 【api申请在等待列表，暂未测试】
   - [x] claude-web (将web端功能封装成openai api)
   - [x] 智谱ai
-  - [ ] bingchat
+  - [x] bingchat(copilot)
   - [ ] 百度文心一言
   - [x] 讯飞星火
   - [x] gemini
@@ -184,5 +180,18 @@
                 "https": "http://localhost:7890"
             }
         }
+    },
+    {
+        "token": "bing-7c7aa4a3549f5",
+        "type": "bing-sydney",
+        "config": {
+            "cookie": "xxxxx",
+            "style": "balanced"
+        }
     }
     ]
+
+
+## 项目部分代码来自于以下开源项目，感谢🙏
+https://github.com/vsakkas/sydney.py
+https://github.com/suqingdong/sparkapi
