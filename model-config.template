@@ -87,6 +87,16 @@
         }
     },
     {
+        "token": "gemini-7c7aa4a3549f5",
+        "type": "gemini",
+        "config": {
+            "api_key": "xxxxx",
+            "proxies": {
+                "https": "http://localhost:7890"
+            }
+        }
+    },
+    {
         "token": "bing-7c7aa4a3549f5",
         "type": "bing-sydney",
         "config": {
