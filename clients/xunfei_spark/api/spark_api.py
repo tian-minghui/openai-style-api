@@ -96,13 +96,11 @@ class SparkAPI(object):
         self.api_key = api_key
         self.api_secret = api_secret
         self.api_model = api_model
-        self._wss_url = None
 
     def create_wss_connection(self):
-        if self._wss_url is None:
-            api_url = MODEL_MAP[self.api_model]["url"]
-            self._wss_url = get_wss_url(api_url, self.api_secret, self.api_key)
-        return ws_connect(self._wss_url)
+        api_url = MODEL_MAP[self.api_model]["url"]
+        wss_url = get_wss_url(api_url, self.api_secret, self.api_key)
+        return ws_connect(wss_url)
 
     def build_query(self, messages, **kwargs):
         query = {
