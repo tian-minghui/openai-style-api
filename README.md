@@ -44,7 +44,7 @@
 
     docker pull tianminghui/openai-style-api
 
-    docker run -d -p 8090:8090 \
+    docker run -d -p 8090:8090 --name openai-style-api\
     -e ADMIN-TOKEN=admin \
     -v /path/to/your/model-config.json:/app/model-config.json \
     tianminghui/openai-style-api
@@ -68,16 +68,19 @@ clone本项目，或者下载项目中的`docker-compose.yml`文件，修改其�
 model-config.json 配置文件简单示例
 
 ```
-    [{
-        "token": "f2b7295fc440db7f",
-        "type": "openai",  // openai 
-        "config": {
-            "api_base": "https://api.openai.com/v1/",
-            "api_key": "sk-xxxxxx",
-            "model": "gpt-3.5-turbo"
-            "temperature": 0.8
+    [
+        {
+            "token": "f2b7295fc440db7f",
+            "type": "azure",  // azure openai 模型
+            "config": {
+                "api_base": "https://xxxx.openai.azure.com/",
+                "deployment_id": "gpt-35-turbo",
+                "api_version": "2023-05-15",
+                "api_key": "xxxxxx",
+                "temperature": 0.8
+            }
         }
-    }]
+    ]
 ```
 - 整个文件是一个json list，可以配置多个模型，只要token不重复就行
 - token 自定义的token，后续在请求的时候拿着这个token来请求
