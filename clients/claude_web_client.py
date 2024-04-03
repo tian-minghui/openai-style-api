@@ -4,6 +4,7 @@ import uuid
 import requests as req
 from curl_cffi import requests
 import re
+from loguru import logger
 
 # 参考 https://github.com/KoushikNavuluri/Claude-API
 
@@ -32,6 +33,7 @@ class ClaudeWebClient:
 
         response = requests.get(url, headers=headers,
                                 impersonate="chrome110", proxies=self.proxies)
+        logger.debug(response.status_code, response.text)
         res = json.loads(response.text)
         uuid = res[0]['uuid']
 

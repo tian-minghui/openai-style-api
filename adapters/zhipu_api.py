@@ -1,7 +1,5 @@
-
-
 from typing import Dict, Iterator, List
-from adapters.base import ModelAdapter
+from adapters.base import ModelAdapter, post, stream
 from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse, ChatMessage
 import time
 
@@ -11,7 +9,6 @@ from loguru import logger
 from utils.util import num_tokens_from_string
 
 from utils.sse_client import SSEClient
-from utils.http_util import post, stream
 
 API_TOKEN_TTL_SECONDS = 3 * 60
 
@@ -55,14 +52,17 @@ class ZhiPuApiModel(ModelAdapter):
         self.api_key = kwargs.pop("api_key", None)
         self.model = kwargs.pop("model", None)
         self.prompt = kwargs.pop(
-            "prompt", "You need to follow the system settings:{system}")
+            "prompt", "You need to follow the system settings:{system}"
+        )
         self.config_args = kwargs
 
-    def chat_completions(self, request: ChatCompletionRequest) -> Iterator[ChatCompletionResponse]:
-        '''
+    def chat_completions(
+        self, request: ChatCompletionRequest
+    ) -> Iterator[ChatCompletionResponse]:
+        """
         https://open.bigmodel.cn/dev/api#http
         https://open.bigmodel.cn/dev/api#sdk
-        '''
+        """
         # 发起post请求
         model = self.model if self.model else request.model
         invoke_method = "sse-invoke" if request.stream else "invoke"
@@ -74,7 +74,9 @@ class ZhiPuApiModel(ModelAdapter):
             event_data = SSEClient(data)
             for event in event_data.events():
                 logger.debug(f"chat_completions event: {event}")
-                yield ChatCompletionResponse(**self.convert_response_stream(event, model))
+                yield ChatCompletionResponse(
+                    **self.convert_response_stream(event, model)
+                )
         else:
             global headers
             headers.update({"Authorization": token})
@@ -85,55 +87,26 @@ class ZhiPuApiModel(ModelAdapter):
     def convert_response(self, resp, model):
         resp = resp["data"]
         req_id = resp["request_id"]
-        openai_response = {
-            "id": f"chatcmpl-{req_id}",
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": model,
-            "usage": {
-                "prompt_tokens": resp["usage"]["prompt_tokens"],
-                "completion_tokens": resp["usage"]["completion_tokens"],
-                "total_tokens": resp["usage"]["total_tokens"],
-            },
-            "choices": [
-                {
-                    "message": {
-                        "role": "assistant",
-                        "content": resp["choices"][0]["content"],
-                    },
-                    "index": 0,
-                    "finish_reason": "stop",
-                }
-            ],
-        }
-        return openai_response
+        prompt_tokens = resp["usage"]["prompt_tokens"]
+        completion_tokens = resp["usage"]["completion_tokens"]
+        content = resp["choices"][0]["content"]
+        return self.completion_to_openai_response(
+            content,
+            model=model,
+            id=req_id,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+        )
 
     def convert_response_stream(self, event_data, model):
         completion = event_data.data
-        completion_tokens = num_tokens_from_string(completion)
         finish_reason = "stop" if event_data.event == "finish" else None
-        openai_response = {
-            "id": f"chatcmpl-{event_data.id}",
-            "object": "chat.completion.chunk",
-            "created": int(time.time()),
-            "model": model,
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "delta": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": finish_reason,
-                }
-            ],
-        }
-        return openai_response
+        return self.completion_to_openai_stream_response(
+            completion,
+            model,
+            finish_reason=finish_reason,
+            id=f"chatcmpl-{event_data.id}",
+        )
 
     def convert_params(self, request: ChatCompletionRequest) -> Dict:
         """
@@ -153,7 +126,9 @@ class ZhiPuApiModel(ModelAdapter):
             params["top_p"] = top_p
         return params
 
-    def convert_messages_to_prompt(self, messages: List[ChatMessage]) -> List[Dict[str, str]]:
+    def convert_messages_to_prompt(
+        self, messages: List[ChatMessage]
+    ) -> List[Dict[str, str]]:
         prompt = []
         for message in messages:
             role = message.role

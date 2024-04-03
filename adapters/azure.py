@@ -2,11 +2,10 @@
 
 import json
 from typing import Iterator, Union
-from adapters.base import ModelAdapter
+from adapters.base import ModelAdapter, post, stream
 from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 import requests
 from loguru import logger
-from utils.http_util import post, stream
 
 
 class AzureAdapter(ModelAdapter):

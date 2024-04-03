@@ -2,14 +2,16 @@ import json
 import time
 from typing import Dict, Iterator, List
 import uuid
-from adapters.base import ModelAdapter
+from adapters.base import ModelAdapter, post
 from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse, ChatMessage
-import requests
-from utils.http_util import post, stream
-from loguru import logger
 from utils.util import num_tokens_from_string
 
 """
+
+https://ai.google.dev/tutorials/rest_quickstart
+
+
+
  curl -x http://127.0.0.1:7890 https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key= \
     -H 'Content-Type: application/json' \
     -X POST \
@@ -117,55 +119,11 @@ class GeminiAdapter(ModelAdapter):
 
     def response_convert_stream(self, data):
         completion = data["candidates"][0]["content"]["parts"][0]["text"]
-        completion_tokens = num_tokens_from_string(completion)
-        openai_response = {
-            "id": str(uuid.uuid1()),
-            "object": "chat.completion.chunk",
-            "created": int(time.time()),
-            "model": self.model,
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "delta": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": "stop",
-                }
-            ],
-        }
-        return openai_response
+        return self.completion_to_openai_stream_response(completion, self.model)
 
     def response_convert(self, data):
         completion = data["candidates"][0]["content"]["parts"][0]["text"]
-        completion_tokens = num_tokens_from_string(completion)
-        openai_response = {
-            "id": str(uuid.uuid1()),
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": self.model,
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "message": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": "stop",
-                }
-            ],
-        }
-        return openai_response
+        return self.completion_to_openai_response(completion, self.model)
 
     """
     [
@@ -189,7 +147,7 @@ class GeminiAdapter(ModelAdapter):
             role = message.role
             if role in ["function"]:
                 raise Exception(f"不支持的功能:{role}")
-            if role == "system":  # 将system转为user   这里可以使用  CharacterGLM
+            if role == "system":  # 将system转为user
                 role = "user"
                 content = self.prompt.format(system=message.content)
                 prompt.append({"role": role, "parts": [{"text": content}]})

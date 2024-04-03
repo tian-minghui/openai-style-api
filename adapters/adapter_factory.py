@@ -1,6 +1,6 @@
 from loguru import logger
 from adapters.azure import AzureAdapter
-from adapters.base import ModelAdapter
+from adapters.base import ModelAdapter, invalid_request_error
 from adapters.claude import ClaudeModel
 from adapters.claude_web import ClaudeWebModel
 from adapters.proxy import ProxyAdapter
@@ -10,14 +10,14 @@ from adapters.router_adapter import RouterAdapter
 from adapters.model_name_router_adapter import ModelNameRouterAdapter
 from adapters.gemini_adapter import GeminiAdapter
 from adapters.bing_sydney import BingSydneyModel
-
+from adapters.qwen import QWenAdapter
 model_instance_dict = {}
 
 
 def get_adapter(instanceKey: str):
     model = model_instance_dict.get(instanceKey)
     if model is None:
-        raise Exception("model not found")
+        raise invalid_request_error("model not found")
     return model
 
 
@@ -51,10 +51,12 @@ def init_adapter(instanceKey: str, type: str, **kwargs) -> ModelAdapter:
             model = GeminiAdapter(**kwargs)
         elif type == "bing-sydney":
             model = BingSydneyModel(**kwargs)
+        elif type == "qwen":
+            model = QWenAdapter(**kwargs)
         else:
             raise ValueError(f"unknown model type: {type}")
     except Exception as e:
-        logger.error(f"init model failed {instanceKey},{type},{kwargs}: {e}")
+        logger.exception(f"init model failed {instanceKey},{type},{kwargs}: {e}")
     if model is not None:
         model_instance_dict[instanceKey] = model
     return model

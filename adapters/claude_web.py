@@ -54,53 +54,7 @@ class ClaudeWebModel(ModelAdapter):
         yield ChatCompletionResponse(**resp)
 
     def claude_to_openai_stream_response(self, completion: str):
-        completion_tokens = num_tokens_from_string(completion)
-        openai_response = {
-            "id": f"chatcmpl-{str(time.time())}",
-            "object": "chat.completion.chunk",
-            "created": int(time.time()),
-            "model": "claude-2",
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "delta": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": "stop",
-                }
-            ],
-        }
-
-        return openai_response
+        return self.completion_to_openai_stream_response(completion)
 
     def claude_to_openai_response(self, completion: str):
-        completion_tokens = num_tokens_from_string(completion)
-        openai_response = {
-            "id": f"chatcmpl-{str(time.time())}",
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": "claude-2",
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "message": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": "stop",
-                }
-            ],
-        }
-
-        return openai_response
+        return self.completion_to_openai_response(completion)

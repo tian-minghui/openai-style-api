@@ -43,13 +43,15 @@ class ChatCompletionRequest(BaseModel):
 class ChatCompletionResponseChoice(BaseModel):
     index: int
     message: ChatMessage
-    finish_reason: Literal["stop", "length", "function_call"]
+    # finish_reason: Literal["stop", "length", "function_call"]
+    finish_reason: Optional[str]
 
 
 class ChatCompletionResponseStreamChoice(BaseModel):
     index: int
     delta: DeltaMessage
-    finish_reason: Optional[Literal["stop", "length"]]
+    # finish_reason: Optional[Literal["stop", "length"]]
+    finish_reason: Optional[str]
 
 
 class Usage(BaseModel):
@@ -67,3 +69,5 @@ class ChatCompletionResponse(BaseModel):
     ]
     created: Optional[int] = Field(default_factory=lambda: int(time.time()))
     usage: Optional[Usage] = None
+
+

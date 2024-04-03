@@ -1,12 +1,11 @@
 import json
 from typing import Iterator
 import requests
-from adapters.base import ModelAdapter
+from adapters.base import ModelAdapter, post, stream
 from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from loguru import logger
 from utils.util import num_tokens_from_string
 import time
-from utils.http_util import post, stream
 
 # 默认的model映射，不过request中的model参数会被config覆盖
 model_map = {
@@ -39,10 +38,12 @@ class ClaudeModel(ModelAdapter):
         self.model = kwargs.pop("model", None)
         self.config_args = kwargs
 
-    def chat_completions(self, request: ChatCompletionRequest) -> Iterator[ChatCompletionResponse]:
-        '''
+    def chat_completions(
+        self, request: ChatCompletionRequest
+    ) -> Iterator[ChatCompletionResponse]:
+        """
         https://docs.anthropic.com/claude/reference/getting-started-with-the-api
-        '''
+        """
         openai_params = request.model_dump_json()
         claude_params = self.openai_to_claude_params(openai_params)
         url = "https://api.anthropic.com/v1/complete"
@@ -56,7 +57,7 @@ class ClaudeModel(ModelAdapter):
             response = stream(url, headers, claude_params)
             for chunk in response.iter_lines(chunk_size=1024):
                 # 移除头部data: 字符
-                decoded_line = chunk.decode('utf-8')
+                decoded_line = chunk.decode("utf-8")
                 logger.info(f"decoded_line: {decoded_line}")
                 decoded_line = decoded_line.lstrip("data:").strip()
                 json_line = json.loads(decoded_line)
@@ -72,10 +73,8 @@ class ClaudeModel(ModelAdapter):
                 else:
                     completion = json_line.get("completion")
                     if completion:
-                        openai_response = (
-                            self.claude_to_chatgpt_response_stream(
-                                decoded_line
-                            )
+                        openai_response = self.claude_to_chatgpt_response_stream(
+                            decoded_line
                         )
                 if openai_response:
                     yield ChatCompletionResponse(**openai_response)
@@ -123,58 +122,22 @@ class ClaudeModel(ModelAdapter):
 
     def claude_to_chatgpt_response_stream(self, claude_response):
         completion = claude_response.get("completion", "")
-        completion_tokens = num_tokens_from_string(completion)
-        openai_response = {
-            "id": f"chatcmpl-{str(time.time())}",
-            "object": "chat.completion.chunk",
-            "created": int(time.time()),
-            "model": "gpt-3.5-turbo-0613",
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "delta": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": stop_reason_map[claude_response.get("stop_reason")]
-                    if claude_response.get("stop_reason")
-                    else None,
-                }
-            ],
-        }
-        return openai_response
+        finish_reason = (
+            stop_reason_map[claude_response.get("stop_reason")]
+            if claude_response.get("stop_reason")
+            else None
+        )
+        return self.completion_to_openai_stream_response(
+            completion, self.model, finish_reason=finish_reason
+        )
 
     def claude_to_chatgpt_response(self, claude_response):
-        completion_tokens = num_tokens_from_string(
-            claude_response.get("completion", "")
+        completion = claude_response.get("completion", "")
+        finish_reason = (
+            stop_reason_map[claude_response.get("stop_reason")]
+            if claude_response.get("stop_reason")
+            else None
         )
-        openai_response = {
-            "id": f"chatcmpl-{str(time.time())}",
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": self.model,
-            "usage": {
-                "prompt_tokens": 0,
-                "completion_tokens": completion_tokens,
-                "total_tokens": completion_tokens,
-            },
-            "choices": [
-                {
-                    "message": {
-                        "role": "assistant",
-                        "content": claude_response.get("completion", ""),
-                    },
-                    "index": 0,
-                    "finish_reason": stop_reason_map[claude_response.get("stop_reason")]
-                    if claude_response.get("stop_reason")
-                    else None,
-                }
-            ],
-        }
-
-        return openai_response
+        return self.completion_to_openai_response(
+            completion, self.model, finish_reason=finish_reason
+        )

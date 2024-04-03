@@ -103,5 +103,13 @@
             "cookie": "xxxxx",
             "style": "balanced"
         }
+    },
+    {
+        "token":"qwen-111111xxxx",
+        "type":"qwen",
+        "config":{
+            "api_key":"sk-xxxxxxxx",
+            "model":"qwen-turbo"
+        }
     }
 ]

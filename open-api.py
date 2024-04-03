@@ -5,7 +5,7 @@ from fastapi.responses import StreamingResponse, JSONResponse, HTMLResponse
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from fastapi.routing import APIRouter
 from pydantic import BaseModel
-from adapters.base import ModelAdapter
+from adapters.base import ModelAdapter, UDFApiError, serverError
 from adapters.protocol import ChatCompletionRequest, ChatCompletionResponse
 from typing import Iterator, List, Optional
 from adapters.adapter_factory import get_adapter
@@ -86,9 +86,11 @@ def check_admin_token(
     )
 
 
-def convert(resp: Iterator[ChatCompletionResponse]):
-    for response in resp:
-        yield f"data: {response.model_dump_json(exclude_none=True)}\n\n"
+def convert(first_resp: ChatCompletionResponse, resp: Iterator[ChatCompletionResponse]):
+    yield f"data: {first_resp.model_dump_json(exclude_none=True)}\n\n"
+    yield from (
+        f"data: {response.model_dump_json(exclude_none=True)}\n\n" for response in resp
+    )
     yield "data: [DONE]\n\n"
 
 
@@ -103,12 +105,22 @@ def create_chat_completion(
     request: ChatCompletionRequest, model: ModelAdapter = Depends(check_api_key)
 ):
     logger.info(f"request: {request},  model: {model}")
-    resp = model.chat_completions(request)
-    if request.stream:
-        return StreamingResponse(convert(resp), media_type="text/event-stream")
-    else:
-        openai_response = next(resp)
-        return JSONResponse(content=openai_response.model_dump(exclude_none=True))
+    try:
+        resp = model.chat_completions(request)
+        if request.stream:
+            # 为了让生成器中的异常，在这里被捕获，StreamingResponse中会吞掉异常
+            first_respose = next(resp)
+            return StreamingResponse(
+                convert(first_respose, resp), media_type="text/event-stream"
+            )
+        else:
+            openai_response = next(resp)
+            return JSONResponse(content=openai_response.model_dump(exclude_none=True))
+    except UDFApiError as ue:
+        return JSONResponse(content=ue._message, status_code=ue.http_status)
+    except Exception as e:
+        logger.exception(e)
+        return JSONResponse(content=str(e), status_code=500)
 
 
 @router.get("/verify")

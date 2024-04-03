@@ -19,13 +19,19 @@
   - [ ] 百度文心一言
   - [x] 讯飞星火
   - [x] gemini
+  - [x] 通义千问
   - [ ] ...
 - [x] 支持stream方式调用
 - [x] 支持open ai的第三方代理服务，比如openai-sb等
 - [x] 支持在线更新配置 `http://0.0.0.0:8090/`（这个前端页面和交互完全是用gpt写的 哈哈）
 - [x] 支持负载均衡，一个key可轮训/随机/并行等访问多个模型
 - [x] 支持按照model_name进行路由
-- [ ] 错误和异常处理优化，对齐openai errorcode
+
+**更新日志**
+
+2024-04-03
+- 支持通义千问
+- 优化异常处理
 
 
 ## 快速开始
@@ -188,10 +194,18 @@
             "cookie": "xxxxx",
             "style": "balanced"
         }
+    },
+    {
+        "token":"qwen-111111xxxx",
+        "type":"qwen",
+        "config":{
+            "api_key":"sk-xxxxxxxx",
+            "model":"qwen-turbo"
+        }
     }
     ]
 
 
 ## 项目部分代码来自于以下开源项目，感谢🙏
-https://github.com/vsakkas/sydney.py
-https://github.com/suqingdong/sparkapi
+ - https://github.com/vsakkas/sydney.py
+ - https://github.com/suqingdong/sparkapi

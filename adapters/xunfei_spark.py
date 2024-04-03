@@ -77,31 +77,18 @@ class XunfeiSparkAPIModel(ModelAdapter):
             prompt_tokens = usage["prompt_tokens"]
             completion_tokens = usage["completion_tokens"]
             total_tokens = usage["total_tokens"]
-
-        openai_response = {
-            "id": resp_json["header"]["sid"],
-            "object": "chat.completion.chunk",
-            "created": int(time.time()),
-            "model": "gpt-3.5-turbo-0613",
-            "usage": {
-                "prompt_tokens": prompt_tokens,
-                "completion_tokens": completion_tokens,
-                "total_tokens": total_tokens,
-            },
-            "choices": [
-                {
-                    "delta": {
-                        "role": "assistant",
-                        "content": completion,
-                    },
-                    "index": 0,
-                    "finish_reason": "stop"
-                    if resp_json["payload"]["choices"]["status"] == 2
-                    else None,
-                }
-            ],
-        }
-        return openai_response
+        id = resp_json["header"]["sid"]
+        finish_reason = (
+            "stop" if resp_json["payload"]["choices"]["status"] == 2 else None
+        )
+        return self.completion_to_openai_stream_response(
+            completion,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+            total_tokens=total_tokens,
+            id=id,
+            finish_reason=finish_reason,
+        )
 
     def client_response_to_chatgpt_response(self, iter_resp):
         completions = []
@@ -124,25 +111,11 @@ class XunfeiSparkAPIModel(ModelAdapter):
                 prompt_tokens = usage["prompt_tokens"]
                 completion_tokens = usage["completion_tokens"]
                 total_tokens = usage["total_tokens"]
-        openai_response = {
-            "id": id,
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": "gpt-3.5-turbo-0613",
-            "usage": {
-                "prompt_tokens": prompt_tokens,
-                "completion_tokens": completion_tokens,
-                "total_tokens": total_tokens,
-            },
-            "choices": [
-                {
-                    "message": {
-                        "role": "assistant",
-                        "content": "".join(completions),
-                    },
-                    "index": 0,
-                    "finish_reason": "stop",
-                }
-            ],
-        }
-        return openai_response
+        content = "".join(completions)
+        return self.completion_to_openai_response(
+            content,
+            prompt_tokens=prompt_tokens,
+            completion_toke=completion_tokens,
+            total_tokens=total_tokens,
+            id=id,
+        )
