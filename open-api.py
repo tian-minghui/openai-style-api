@@ -1,4 +1,4 @@
-import json
+import uuid
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse, JSONResponse, HTMLResponse
@@ -21,7 +21,7 @@ import os
 from fastapi.staticfiles import StaticFiles
 
 router = APIRouter()
-admin_token = "admin"
+admin_token = uuid.uuid1()
 
 
 def create_app():

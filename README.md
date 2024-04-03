@@ -34,25 +34,55 @@
 - 优化异常处理
 
 
-## 快速开始
+## 部署方式
 
+**项目的核心配置依赖model-config.json文件，若是没有model-config.json，默认会使用model-config-default.json启动，这时虽然能启动起来，但是因为api-key等没有配置，无法调用成功。**
+
+### Docker
+
+本地新建一个model-config.json文件，根据下边配置文件示例，进行配置， 然后运行以下命令
+
+    docker pull tianminghui/openai-style-api
+
+    docker run -d -p 8090:8090 \
+    -e ADMIN-TOKEN=admin \
+    -v /path/to/your/model-config.json:/app/model-config.json \
+    tianminghui/openai-style-api
+
+`/path/to/your/model-config.json` 替换成你自己的本地路径
+
+### Docker compose
+clone本项目，或者下载项目中的`docker-compose.yml`文件，修改其中的`/path/to/your/model-config.json`, 然后运行以下命令
+
+    docker-compose up -d
+
+
+### 本地部署
 1. `git clone https://github.com/tian-minghui/openai-style-api.git` 拉取项目代码
-2. `cp model-config.template model-config.json`  并按需修改配置文件model-config.json
- 
-        {
-          "token": "f2b7295fc440db7f",
-          "type": "azure",
-          "config": {
-              "api_base": "https://xxxx.openai.azure.com/",
-              "deployment_id": "xxxx",
-              "api_version": "2023-05-15",
-              "api_key": "xxxx",
-              "temperature": 0.8
-          }
-        }
+2. `cp model-config-default.json model-config.json`  并按需修改配置文件model-config.json
+3.  `pip install -r  requirements.txt` 
+4. 运行 `python open-api.py`
 
-4. 本地化部署直接 `pip install -r  requirements.txt` 后，运行 `python open-api.py`,  docker部署在目录下执行 `docker compose up -d`
-5. 有了api-base: localhost:8090 和 api-key:f2b7295fc440db7f 可以使用了，下边列举了几种使用方式
+
+## 配置说明
+model-config.json 配置文件简单示例
+
+```
+    [{
+        "token": "f2b7295fc440db7f",
+        "type": "openai",  // openai 
+        "config": {
+            "api_base": "https://api.openai.com/v1/",
+            "api_key": "sk-xxxxxx",
+            "model": "gpt-3.5-turbo"
+            "temperature": 0.8
+        }
+    }]
+```
+- 整个文件是一个json list，可以配置多个模型，只要token不重复就行
+- token 自定义的token，后续在请求的时候拿着这个token来请求
+- type 类型，表示以下config中的配置是那个模型的，比如 openai，通义千问
+- config， 配置openai的api_base, api_key, model等， 针对不用模型有不同的配置（下边有配置示例，更详细配置可以看代码）， 此处的配置优先于客户端请求中的配置，比如"temperature": 0.8,  会覆盖请求中的temperature（这里的想法是可以针对同一个模型，调整不同参数，映射成一个新模型）
 
 ## 使用方式
 
@@ -179,7 +209,7 @@
     },
     {
         "token": "gemini-7c7aa4a3549f5",
-        "type": "gemini",
+        "type": "gemini",   // gemini
         "config": {
             "api_key": "xxxxx",
             "proxies": {
@@ -188,7 +218,7 @@
         }
     },
     {
-        "token": "bing-7c7aa4a3549f5",
+        "token": "bing-7c7aa4a3549f5",  // 必应
         "type": "bing-sydney",
         "config": {
             "cookie": "xxxxx",
@@ -196,7 +226,7 @@
         }
     },
     {
-        "token":"qwen-111111xxxx",
+        "token":"qwen-111111xxxx",  // 通义千问
         "type":"qwen",
         "config":{
             "api_key":"sk-xxxxxxxx",
