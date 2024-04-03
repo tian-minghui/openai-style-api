@@ -4,7 +4,7 @@ from typing import Dict, List
 from pydantic import BaseModel
 from loguru import logger
 from adapters.adapter_factory import init_adapter, clear_adapters
-
+import os
 
 class ModelConfig(BaseModel):
     token: str
@@ -14,6 +14,8 @@ class ModelConfig(BaseModel):
 
 token_2_modelconfig: Dict[str, ModelConfig] = dict()
 config_path = "model-config.json"
+if not os.path.exists(config_path):
+    config_path = "model-config-default.json"
 
 
 def load_model_config():

@@ -65,6 +65,6 @@ if __name__ == "__main__":
     time.sleep(2)
     single_message_test(stream=True)
     # time.sleep(2)
-    multiple_messages_test()
+    # multiple_messages_test()
     time.sleep(2)
     # multiple_messages_test(stream=True)
