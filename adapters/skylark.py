@@ -17,8 +17,13 @@ class SkylarkAdapter(ModelAdapter):
 
     def chat_completions(self, request: ChatCompletionRequest) -> Iterator[ChatCompletionResponse]:
         data = self.openai_req_2_sl_req(request)
-        resp = self.maas.chat(data)
-        yield ChatCompletionResponse(**self.sl_resp_2_openai_resp(resp))
+        if request.stream:
+            resps = self.maas.stream_chat(data)
+            for resp in resps:
+                yield ChatCompletionResponse(**self.sl_resp_2_openai_resp_stream(resp))
+        else:
+            resp = self.maas.chat(data)
+            yield ChatCompletionResponse(**self.sl_resp_2_openai_resp(resp))
 
     def sl_resp_2_openai_resp(self, response: dict) -> dict:
         id = response["req_id"]
@@ -31,6 +36,17 @@ class SkylarkAdapter(ModelAdapter):
             id=id,
             prompt_tokens=prompt_tokens,
             completion_tokens=completion_tokens,
+        )
+
+    def sl_resp_2_openai_resp_stream(self, response: dict) -> dict:
+        id = response["req_id"]
+        content = response["choice"]["message"]["content"]
+        return self.completion_to_openai_response(
+            content,
+            model=self.model,
+            id=id,
+            prompt_tokens=0,
+            completion_tokens=0,
         )
 
     def openai_req_2_sl_req(self, request: ChatCompletionRequest) -> dict:
