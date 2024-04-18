@@ -61,7 +61,7 @@ if __name__ == "__main__":
     api_key = sys.argv[1]
     openai.api_base = "http://localhost:8090/v1"
     openai.api_key = api_key
-    single_message_test()
+    # single_message_test()
     time.sleep(2)
     single_message_test(stream=True)
     # time.sleep(2)

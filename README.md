@@ -15,6 +15,7 @@
   - [x] claude-api 【api申请在等待列表，暂未测试】
   - [x] claude-web (将web端功能封装成openai api)
   - [x] 智谱ai
+  - [x] kimi
   - [x] bingchat(copilot)
   - [ ] 百度文心一言
   - [x] 讯飞星火
@@ -52,7 +53,7 @@
 `/path/to/your/model-config.json` 替换成你自己的本地路径
 
 ### Docker compose
-clone本项目，或者下载项目中的`docker-compose.yml`文件，修改其中的`/path/to/your/model-config.json`, 然后运行以下命令
+clone本项目，或者下载项目中的`docker-compose.yml`文件，修改其中的`./model-config.json`路径, 然后运行以下命令
 
     docker-compose up -d
 
@@ -234,6 +235,15 @@ model-config.json 配置文件简单示例
         "config":{
             "api_key":"sk-xxxxxxxx",
             "model":"qwen-turbo"
+        }
+    },
+    {
+        "token": "kimi-GxqT3BlbkFJj1", // kimi
+        "type": "openai",    // kimi api与openai相同，因此使用openai就可以
+        "config": {
+            "api_base": "https://api.moonshot.cn/v1/",
+            "api_key": "sk-xxxxxx",
+            "model": "moonshot-v1-8k"
         }
     }
     ]

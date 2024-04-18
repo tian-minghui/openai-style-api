@@ -8,4 +8,4 @@ services:
     environment:
       - ADMIN-TOKEN=admin
     volumes:
-      - /path/to/your/model-config.json:/app/model-config.json
+      - ./model-config.json:/app/model-config.json
