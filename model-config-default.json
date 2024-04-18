@@ -111,5 +111,14 @@
             "api_key":"sk-xxxxxxxx",
             "model":"qwen-turbo"
         }
+    },
+    {
+        "token": "kimi-GxqT3BlbkFJj1",
+        "type": "openai",
+        "config": {
+            "api_base": "https://api.moonshot.cn/v1/",
+            "api_key": "sk-xxxxxx",
+            "model": "moonshot-v1-8k"
+        }
     }
 ]
