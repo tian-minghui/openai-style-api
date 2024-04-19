@@ -110,6 +110,8 @@ model-config.json 配置文件简单示例
 
 ### openai库调用
 
+openai<1.0.0 使用如下方式
+
     import openai
 
     openai.api_key = "f2b7295fc440db7f"
@@ -118,6 +120,30 @@ model-config.json 配置文件简单示例
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo", messages=[{"role": "user", "content": "Hello world"}])
     print(completion.choices[0].message.content)
+
+
+openai>=1.0.0使用以下方式调用
+    
+    import os
+    from openai import OpenAI
+
+    client = OpenAI(
+        # This is the default and can be omitted
+        api_key='kimi-GxqT3BlbkFJj',
+        base_url = 'http://localhost:8090/v1'
+    )
+
+    chat_completion = client.chat.completions.create(
+        messages=[
+            {
+                "role": "user",
+                "content": "Say this is a test",
+            }
+        ],
+        model="gpt-3.5-turbo",
+    )
+
+    print(chat_completion.choices[0].message.content)
 
 ### 第三方应用
 
