@@ -113,13 +113,22 @@
         }
     },
     {
-    "token": "sl-7c7aa4a3549f5",
-    "type": "skylark",
-    "config": {
-      "api_key": "AKxxxxxx",
-      "model": "Skylark2-pro-32k",
-      "temperature": 0.01,
-      "max_length": 1999
-    }
+        "token": "sl-7c7aa4a3549f5",
+        "type": "skylark",
+        "config": {
+          "api_key": "AKxxxxxx",
+          "model": "Skylark2-pro-32k",
+          "temperature": 0.01,
+          "max_length": 1999
+        }
+    },
+    {
+        "token": "kimi-GxqT3BlbkFJj1",
+        "type": "openai",
+        "config": {
+            "api_base": "https://api.moonshot.cn/v1/",
+            "api_key": "sk-xxxxxx",
+            "model": "moonshot-v1-8k"
+        }
     }
 ]
