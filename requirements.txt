@@ -53,3 +53,4 @@ websockets==11.0.3
 yarl==1.9.2
 zope.event==5.0
 zope.interface==6.1
+volcengine==1.0.138
