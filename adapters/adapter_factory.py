@@ -11,6 +11,7 @@ from adapters.model_name_router_adapter import ModelNameRouterAdapter
 from adapters.gemini_adapter import GeminiAdapter
 from adapters.bing_sydney import BingSydneyModel
 from adapters.qwen import QWenAdapter
+from adapters.skylark import SkylarkAdapter
 model_instance_dict = {}
 
 
@@ -53,6 +54,8 @@ def init_adapter(instanceKey: str, type: str, **kwargs) -> ModelAdapter:
             model = BingSydneyModel(**kwargs)
         elif type == "qwen":
             model = QWenAdapter(**kwargs)
+        elif type == "skylark":
+            model = SkylarkAdapter(**kwargs)
         else:
             raise ValueError(f"unknown model type: {type}")
     except Exception as e:

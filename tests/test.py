@@ -9,8 +9,6 @@ import time
 from loguru import logger
 
 
-
-
 def single_message_test(**kwargs):
     print(f"----------single message test {kwargs}----------")
     try:
@@ -23,7 +21,7 @@ def single_message_test(**kwargs):
         else:
             print(completion)
     except openai.APIError as e:
-        #Handle API error here, e.g. retry or log
+        # Handle API error here, e.g. retry or log
         print(f"OpenAI API returned an API Error: {e}")
         pass
     except Exception as e:
@@ -53,7 +51,6 @@ def multiple_messages_test(**kwargs):
         s = traceback.format_exc()
         print(s)
         logger.error(f"Exception: {e}")
-
 
 
 if __name__ == "__main__":
